@@ -35,11 +35,17 @@ class MossPlagiarismChecker:
     def export_javascript_reports(self, test_directory: str) -> None:
         report = []
         for student in self.students:
+            convention = False
+            for javascript in student.javascripts:
+                if javascript.endswith(f'{student.asurite}.js'):
+                    convention = True
+                    break
+    
             report.append({
                 'asurite': student.asurite,
                 'github_username': student.github_username,
                 'js_files': len(student.javascripts),
-                'naming_convention': len([javascript for javascript in student.javascripts if student.asurite in javascript]) > 0
+                'naming_convention': convention
             })
         df = pd.DataFrame(report)
         overall_javascript_report_path = os.path.join(test_directory, self.JAVASCRIPT_REPORT_NAME)
